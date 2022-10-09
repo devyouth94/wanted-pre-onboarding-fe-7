@@ -9,3 +9,5 @@ $ npm start
 위 순서대로 실행하면 localhost:3000 포트에 실행됩니다.
 
 ## 배포 링크
+
+[배포 링크](https://wanted-devyouth94.vercel.app/)
