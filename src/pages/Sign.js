@@ -106,6 +106,8 @@ const StForm = styled.form`
 const StArticle = styled.article`
   display: flex;
   flex-direction: column;
+
+  width: 100%;
 `;
 
 const StLabel = styled.div`
@@ -127,6 +129,7 @@ const StButton = styled.button`
   justify-content: center;
   align-items: center;
 
+  width: 100%;
   height: 40px;
   background-color: transparent;
 
