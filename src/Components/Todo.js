@@ -1,50 +1,21 @@
 import React, { useRef, useState } from "react";
 
-import instance from "../app/instance";
-
 import styled, { css } from "styled-components";
 import { StInput, StTextButton } from "../shared/GlobalStyle";
 
-const Todo = ({ todo, setTodos }) => {
+const Todo = ({ todo, onSuccessHandler, onEditHandler, onDeleteHandler }) => {
   const [isEditMode, setIsEditMode] = useState(false);
-
   const editTodoRef = useRef(null);
 
-  const onDeleteHandler = async (id) => {
-    try {
-      await instance.delete(`todos/${id}`);
-      setTodos((prev) => prev.filter((item) => item.id !== id));
-    } catch (error) {
-      alert(error.response.data.message);
-    }
-  };
-
-  const onSuccessHandler = async (id) => {
-    try {
-      const { data } = await instance.put(`todos/${id}`, { todo: todo.todo, isCompleted: true });
-      setTodos((prev) => prev.map((item) => (item.id === id ? data : item)));
-    } catch (error) {
-      alert(error.response.data.message);
-    }
-  };
-
-  const onEditHandler = async (id) => {
-    try {
-      const { data } = await instance.put(`todos/${id}`, {
-        todo: editTodoRef.current.value,
-        isCompleted: todo.isCompleted,
-      });
-      setTodos((prev) => prev.map((item) => (item.id === id ? data : item)));
-    } catch (error) {
-      alert(error.response.data.message);
-    }
+  const onClickEdit = () => {
+    onEditHandler(todo, editTodoRef.current.value);
     setIsEditMode((prev) => !prev);
   };
 
   return (
     <StTodoWrap>
       <StTodo>
-        {!todo.isCompleted && !isEditMode && <div onClick={() => onSuccessHandler(todo.id)}>☑️</div>}
+        {!todo.isCompleted && !isEditMode && <div onClick={() => onSuccessHandler(todo)}>☑️</div>}
 
         {isEditMode ? (
           <StInput defaultValue={todo.todo} ref={editTodoRef} />
@@ -56,7 +27,7 @@ const Todo = ({ todo, setTodos }) => {
       <StButtonWrap>
         {isEditMode ? (
           <>
-            <StTextButton onClick={() => onEditHandler(todo.id)}>완료</StTextButton>
+            <StTextButton onClick={onClickEdit}>완료</StTextButton>
             <StTextButton onClick={() => setIsEditMode((prev) => !prev)}>취소</StTextButton>
           </>
         ) : (
