@@ -1,16 +1,8 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
-
-import Sign from "./pages/Sign";
-import TodoList from "./pages/TodoList";
+import Router from "./routes/Router";
 
 const App = () => {
-  return (
-    <Routes>
-      <Route path="/" element={<Sign />} />
-      <Route path="/todo" element={<TodoList />} />
-    </Routes>
-  );
+  return <Router />;
 };
 
 export default App;
