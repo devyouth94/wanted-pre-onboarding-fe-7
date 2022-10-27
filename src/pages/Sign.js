@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import instance from "../app/instance";
+import { authAPI } from "../app/api";
+
+import useSignInput from "../hooks/useSignInput";
+import { setToken } from "../shared/localstorage";
 
 import styled from "styled-components";
 import { StContentsWrap, StInput, StTitle } from "../shared/GlobalStyle";
@@ -10,51 +13,24 @@ const Sign = () => {
   const navigate = useNavigate();
 
   const [isSignUp, setIsSignUp] = useState(false);
-
-  const [user, setUser] = useState({ email: "", password: "" });
-  const [checkEmail, setCheckEmail] = useState(false);
-  const [checkPassword, setCheckPassword] = useState(false);
-
-  const isCorrectEmail = (value) => {
-    return /\w+@\w/.test(value);
-  };
-
-  const isCorrectPassword = (value) => {
-    return value.length >= 8;
-  };
-
-  const onChangeHandler = (event) => {
-    const { name, value } = event.target;
-    setUser((prev) => ({ ...prev, [name]: value }));
-    if (name === "email") {
-      setCheckEmail(isCorrectEmail(value));
-    } else {
-      setCheckPassword(isCorrectPassword(value));
-    }
-  };
+  const { user, checkEmail, checkPassword, onChangeHandler } = useSignInput();
 
   const onSubmitHandler = async (event) => {
     event.preventDefault();
     try {
       if (isSignUp) {
-        await instance.post("/auth/signup", user);
+        await authAPI.signup(user);
         setIsSignUp(false);
         alert("회원가입 완료!");
       } else {
-        const { data } = await instance.post("/auth/signin", user);
-        localStorage.setItem("token", data.access_token);
+        const { data } = await authAPI.signin(user);
+        setToken(data.access_token);
         navigate("/todo");
       }
     } catch (error) {
       alert(error.response.data.message);
     }
   };
-
-  useEffect(() => {
-    if (localStorage.getItem("token")) {
-      navigate("/todo");
-    }
-  }, [navigate]);
 
   return (
     <StContentsWrap>
